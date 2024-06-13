@@ -433,7 +433,7 @@
                     data: form.serialize(),
                     success: function() {
                         // Redirect or do something else upon successful logout
-                        window.location.href = "/login.html";
+                        window.location.href = "/kategori/login.html";
                     },
                     error: function(xhr, textStatus, errorThrown) {
                         console.log(xhr.responseText);
