@@ -331,7 +331,8 @@
                         
                         @csrf
                         @method('DELETE')
-                        <a class="btn btn-danger" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
+                        <button class="btn btn-danger" type="submit">Logout</button>
+
 
                         </form>
                         

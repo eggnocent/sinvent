@@ -45,10 +45,20 @@ class KategoriController extends Controller
             'kategori' => 'required|in:M,A,BHP,BTHP',
         ]);
 
-        Kategori::create([
-            'deskripsi' => $request->deskripsi,
-            'kategori' => $request->kategori,
-        ]);
+        try {
+            DB::beginTransaction(); // <= Starting the transaction
+            // Insert a new order history
+            DB::table('kategori')->insert([
+                'order_id' => $orderID,
+                'status' => 'pending',
+            ]);
+        
+            DB::commit(); // <= Commit the changes
+        } catch (\Exception $e) {
+            report($e);
+            
+            DB::rollBack(); // <= Rollback in case of an exception
+        }
 
         return redirect()->route('kategori.index')->with(['success' => 'Data Berhasil Disimpan!']);
     }
