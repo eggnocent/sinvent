@@ -328,14 +328,10 @@
                     <!-- Page Heading -->
                     <div class="d-sm-flex align-items-center justify-content-between mb-4">
                         <form action="{{ route('logout') }}" method="POST" class="d-flex" role="search">
-                        
-                        @csrf
-                        @method('DELETE')
-                        <button class="btn btn-danger" type="submit">Logout</button>
-
-
+                            @csrf
+                            @method('DELETE')
+                            <button class="btn btn-danger" type="button" data-toggle="modal" data-target="#logoutModal">Logout</button>
                         </form>
-                        
                     </div>
 
                     
@@ -372,24 +368,28 @@
     </a>
 
     <!-- Logout Modal-->
-    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
                     <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">Ã—</span>
+                        <span aria-hidden="true">×</span>
                     </button>
                 </div>
                 <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                    <a class="btn btn-primary" href="login.html">Logout</a>
+                    <form id="logoutForm" action="{{ route('logout') }}" method="POST">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-primary">Logout</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+
 
     <!-- Bootstrap core JavaScript-->
     <script src="{!! asset('theme/vendor/jquery/jquery.min.js') !!}"></script>
@@ -407,6 +407,42 @@
     <!-- Page level custom scripts -->
     <script src="js/demo/chart-area-demo.js"></script>
     <script src="js/demo/chart-pie-demo.js"></script>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="{!! asset('theme/vendor/jquery/jquery.min.js') !!}"></script>
+    <script src="{!! asset('theme/vendor/bootstrap/js/bootstrap.bundle.min.js') !!}"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="{!! asset('theme/vendor/jquery-easing/jquery.easing.min.js') !!}"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="{!! asset('theme/js/sb-admin-2.min.js') !!}"></script>
+
+    <!-- Page level plugins -->
+
+    <!-- Page level custom scripts -->
+
+    <script>
+        $(document).ready(function() {
+            $('#logoutForm').submit(function(e) {
+                e.preventDefault();
+                var form = $(this);
+                $.ajax({
+                    type: form.attr('method'),
+                    url: form.attr('action'),
+                    data: form.serialize(),
+                    success: function() {
+                        // Redirect or do something else upon successful logout
+                        window.location.href = "/login.html";
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+
 
 </body>
 
