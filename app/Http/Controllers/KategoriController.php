@@ -39,29 +39,35 @@ class KategoriController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $this->validate($request, [
-            'deskripsi' => 'required',
-            'kategori' => 'required|in:M,A,BHP,BTHP',
+{
+    $validator = Validator::make($request->all(), [
+        'deskripsi' => 'required',
+        'kategori' => 'required|in:M,A,BHP,BTHP',
+    ]);
+
+    if ($validator->fails()) {
+        return redirect()->back()->withErrors($validator)->withInput();
+    }
+
+    try {
+        DB::beginTransaction(); // Mulai transaksi
+
+        // Masukkan data ke dalam tabel kategori
+        Kategori::create([
+            'deskripsi' => $request->deskripsi,
+            'kategori' => $request->kategori
         ]);
 
-        try {
-            DB::beginTransaction(); // <= Starting the transaction
-            // Insert a new order history
-            DB::table('kategori')->insert([
-                'order_id' => $orderID,
-                'status' => 'pending',
-            ]);
-        
-            DB::commit(); // <= Commit the changes
-        } catch (\Exception $e) {
-            report($e);
-            
-            DB::rollBack(); // <= Rollback in case of an exception
-        }
+        DB::commit(); // Commit transaksi
 
         return redirect()->route('kategori.index')->with(['success' => 'Data Berhasil Disimpan!']);
+    } catch (\Exception $e) {
+        report($e);
+        DB::rollBack(); // Rollback transaksi jika terjadi kesalahan
+        return redirect()->back()->with(['error' => 'Data Gagal Disimpan!']);
     }
+}
+
 
     public function show(string $id)
     {
